@@ -1,9 +1,10 @@
 #include <termios.h>
 #include <cstdio>
+#include <iostream>
 static struct termios old, nw;
 
 /* Initialize new terminal i/o settings */
-void initTermios(int echo) 
+void initTermios(int echo)
 {
 	  tcgetattr(0, &old); /* grab old terminal i/o settings */
 	    nw = old; /* make new settings same as old settings */
@@ -18,13 +19,13 @@ void initTermios(int echo)
 }
 
 /* Restore old terminal i/o settings */
-void resetTermios(void) 
+void resetTermios(void)
 {
 	  tcsetattr(0, TCSANOW, &old);
 }
 
 /* Read 1 character - echo defines echo mode */
-char getch_(int echo) 
+char getch_(int echo)
 {
 	  char ch;
 	    initTermios(echo);
@@ -34,13 +35,13 @@ char getch_(int echo)
 }
 
 /* Read 1 character without echo */
-char getch(void) 
+char getch(void)
 {
 	  return getch_(0);
 }
 
 /* Read 1 character with echo */
-char getche(void) 
+char getche(void)
 {
 	  return getch_(1);
 }
@@ -48,13 +49,16 @@ char getche(void)
 /* Let's test it out */
 int main(void) {
 	 wchar_t c;
+	 char d=0x00,e=0x00,f=0x00;
      printf("(getche example) please type a letter: ");
  	 c = getche();
  	 printf("\nYou typed: %c\n", c);
 	 printf("(getch example) please type a letter...");
 	 c = getch();
-	 printf("\nYou typed: %c\n", c);
-	 
+	 printf("\nYou typed: %c\nType a letter\n", c);
+	 d=getche();e=getche();f=getche();
+
+	 std::cout <<"\n1)" <<d << " 2)" << e<<" 3)"<<f<<"\n";
 	 return 0;
 
 }

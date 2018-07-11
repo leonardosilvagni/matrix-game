@@ -5,8 +5,8 @@
 #include <termios.h>
 #include <cstdio>
 using namespace std;
-static struct termios old, nw;
 
+const int STDIN_FILENO = 0x00;
 const char SPECIAL_KEY = 0x1b; 	// <ESC> but in composed char like arrow the first part
 const char A_KEY = 0x61;
 const char D_KEY = 0x64;
@@ -16,42 +16,6 @@ const char UP_ARROW_KEY = 0x25;		//65 ... 68
 const char DOWN_ARROW_KEY = 0x26;	//<ANY_ARROW> in Unix like are something like 0x1b
 const char RIGHT_ARROW_KEY = 0x27;
 const char LEFT_ARROW_KEY = 0x28; //0x25 ...0x28
-
-
-
-/* Initialize new terminal i/o settings */
-void initTermios(int echo) {
-	  tcgetattr(0, &old); /* grab old terminal i/o settings */
-	  nw = old; /* make new settings same as old settings */
-	  nw.c_lflag &= ~ICANON; /* disable buffered i/o */
-	  if (echo) {
-	      nw.c_lflag |= ECHO; /* set echo mode */
-	    } else {
-		      nw.c_lflag &= ~ECHO; /* set no echo mode */
-	    }
-	  tcsetattr(0, TCSANOW, &nw); /* use these new terminal i/o
-											  settings now */
-}
-
-/* Restore old terminal i/o settings */
-void resetTermios(void)
-{
-  tcsetattr(0, TCSANOW, &old);
-}
-
-/* Read 1 character - echo defines echo mode */
-char getch_(int echo) {
-  char ch;
-  initTermios(echo);
-  ch = getchar();
-  resetTermios();
-  return ch;
-}
-
-/* Read 1 character without echo */
-char getch(void) {
-  return getch_(0);
-}
 
 
 void print_2d_array(int a[4][4]){
@@ -76,6 +40,14 @@ void find_0(int matrix[4][4], int *x, int *y){
 }
 int aRandomValue(int i){return rand()%i;}
 int main(){
+
+	struct termios term;
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ICANON;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+
+
+	char chr_0,chr_1,chr_2;
 	int *mtx = new int[16]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
 	int ctrl_matrix[4][4]={{mtx[0],mtx[1],mtx[2],mtx[3]},{mtx[4],mtx[5],mtx[6],mtx[7]}\
 		,{mtx[8],mtx[9],mtx[10],mtx[11]},{mtx[12],mtx[13],mtx[14],mtx[15]},};
@@ -97,13 +69,12 @@ int main(){
 	cout << "Now the playground have changed, you are the '0' and have to move \
 		to restore the playground to its initial arrangement\n";
 	print_2d_array(matrix);
-	cout << "Press the arrow keys or 'WASD' to move and <ESC> to quit\n";
+	cout << "Press the arrow keys or 'WASD' to move and type <ESC> three times to quit\n";
 	while(true){
-		char chr_0 = 0x00,chr_1 = 0x00, chr_2 = 0x00;
-		chr_0 = getch();
-		chr_1 = getch();
-		chr_2 = getch();
-		switch(chr_0){
+		cin >> chr_0;
+		cin >> chr_1;
+		cin >> chr_2;
+	/*	switch(chr_0){
 			case S_KEY:
 				if(x==3)break;
 				temp=matrix[x+1][y];
@@ -141,45 +112,46 @@ int main(){
 			default:
 				cout << "Sorry don't know\n";
 				break;
-		}
+		}*/
 		if (chr_0==SPECIAL_KEY&&chr_1==0x5b){
 			if (chr_2==UP_ARROW_KEY){
-				if(x==0)break;
+				if(x==0)goto EXTERNAL;
 				temp=matrix[x-1][y];
 				matrix[x-1][y]=0;
 				matrix[x][y]=temp;
 				x-=1;
 				moves++;
-
+				goto EXTERNAL;
 			}if (chr_2==DOWN_ARROW_KEY){
-				if(x==0)break;
+				if(x==0)goto EXTERNAL;
 				temp=matrix[x-1][y];
 				matrix[x-1][y]=0;
 				matrix[x][y]=temp;
 				x-=1;
 				moves++;
-
+				goto EXTERNAL;
 			}if (chr_2==RIGHT_ARROW_KEY){
-				if(y==3)break;
+				if(y==3)goto EXTERNAL;
 				temp=matrix[x][y+1];
 				matrix[x][y+1]=0;
 				matrix[x][y]=temp;
 				y+=1;
 				moves++;
-
+				goto EXTERNAL;
 			}if (chr_2==LEFT_ARROW_KEY){
-				if(y==0)break;
+				if(y==0)goto EXTERNAL;
 				temp=matrix[x][y-1];
 				matrix[x][y-1]=0;
 				matrix[x][y]=temp;
 				y-=1;
 				moves++;
-
+				goto EXTERNAL;
 			}
 		}if (chr_0==SPECIAL_KEY&&chr_1!=0x5b){
 			cout << "You wanted to leave me alone ...\n";
 			return 0;
 		}
+		EXTERNAL:
 		system("clear");//Clear the screen
 		cout << "0 is in coordinates x: " << x+1 << " ; y: " << y+1 << endl;
 		cout << "Player moves: "<< moves << endl;
