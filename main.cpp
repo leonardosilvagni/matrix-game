@@ -142,7 +142,7 @@ int main(){
 				cout << "Sorry don't know\n";
 				break;
 		}
-		if (chr_0==SPECIAL_KEY&&chr_1==91){
+		if (chr_0==SPECIAL_KEY&&chr_1==0x5b){
 			if (chr_2==UP_ARROW_KEY){
 				if(x==0)break;
 				temp=matrix[x-1][y];
@@ -176,7 +176,7 @@ int main(){
 				moves++;
 
 			}
-		}if (chr_0==SPECIAL_KEY){
+		}if (chr_0==SPECIAL_KEY&&chr_1!=0x5b){
 			cout << "You wanted to leave me alone ...\n";
 			return 0;
 		}
