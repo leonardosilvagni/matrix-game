@@ -53,10 +53,6 @@ char getch(void) {
   return getch_(0);
 }
 
-/* Read 1 character with echo */
-char getche(void) {
-  return getch_(1);
-}
 
 void print_2d_array(int a[4][4]){
 	//PRINT ARRAY 2D 4x4
@@ -81,12 +77,12 @@ void find_0(int matrix[4][4], int *x, int *y){
 int aRandomValue(int i){return rand()%i;}
 int main(){
 	int *mtx = new int[16]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-	int ctrl_matrix[4][4]={{mtx[0],mtx[1],mtx[2],mtx[3]},{mtx[4],mtx[5],mtx[6],mtx[7]}
+	int ctrl_matrix[4][4]={{mtx[0],mtx[1],mtx[2],mtx[3]},{mtx[4],mtx[5],mtx[6],mtx[7]}\
 		,{mtx[8],mtx[9],mtx[10],mtx[11]},{mtx[12],mtx[13],mtx[14],mtx[15]},};
 	srand(unsigned(time(0)));
 	random_shuffle(&mtx[0], &mtx[16]);
 	random_shuffle(&mtx[0], &mtx[16],aRandomValue);
-	int matrix[4][4]={{mtx[0],mtx[1],mtx[2],mtx[3]},{mtx[4],mtx[5],mtx[6],mtx[7]}
+	int matrix[4][4]={{mtx[0],mtx[1],mtx[2],mtx[3]},{mtx[4],mtx[5],mtx[6],mtx[7]}\
 		,{mtx[8],mtx[9],mtx[10],mtx[11]},{mtx[12],mtx[13],mtx[14],mtx[15]},};
 	delete [] mtx;
 	int x=0,y=0,temp=0;
@@ -94,6 +90,7 @@ int main(){
 	int * ptr_y=&y;
 	int moves=0;
 	find_0(matrix,ptr_x,ptr_y);
+
 	//HERE STARTS USER INTERFACE
 	cout << "This is the initial playground"<< endl;
 	print_2d_array(ctrl_matrix);
@@ -102,11 +99,50 @@ int main(){
 	print_2d_array(matrix);
 	cout << "Press the arrow keys or 'WASD' to move and <ESC> to quit\n";
 	while(true){
-		char life = 0x00,chr_1 = 0x00, chr_2 = 0x00;
-		life = getch();
+		char chr_0 = 0x00,chr_1 = 0x00, chr_2 = 0x00;
+		chr_0 = getch();
 		chr_1 = getch();
 		chr_2 = getch();
-		if (life==SPECIAL_KEY&&chr_1==91){
+		switch(chr_0){
+			case S_KEY:
+				if(x==3)break;
+				temp=matrix[x+1][y];
+				matrix[x+1][y]=0;
+				matrix[x][y]=temp;
+				x+=1;
+				moves++;
+				break;
+			case W_KEY:
+				if(x==0)break;
+				temp=matrix[x-1][y];
+				matrix[x-1][y]=0;
+				matrix[x][y]=temp;
+				x-=1;
+				moves++;
+				break;
+			case A_KEY:
+				if(y==0)break;
+				temp=matrix[x][y-1];
+				matrix[x][y-1]=0;
+				matrix[x][y]=temp;
+				y-=1;
+				moves++;
+				break;
+			case D_KEY:
+				if(y==3)break;
+				temp=matrix[x][y+1];
+				matrix[x][y+1]=0;
+				matrix[x][y]=temp;
+				y+=1;
+				moves++;
+				break;
+			case SPECIAL_KEY:
+				break;
+			default:
+				cout << "Sorry don't know\n";
+				break;
+		}
+		if (chr_0==SPECIAL_KEY&&chr_1==91){
 			if (chr_2==UP_ARROW_KEY){
 				if(x==0)break;
 				temp=matrix[x-1][y];
@@ -140,58 +176,14 @@ int main(){
 				moves++;
 
 			}
+		}if (chr_0==SPECIAL_KEY){
+			cout << "You wanted to leave me alone ...\n";
+			return 0;
 		}
-	/*	switch(life){
-			case DOWN_ARROW_KEY:
-			case S_KEY:
-				if(x==3)break;
-				temp=matrix[x+1][y];
-				matrix[x+1][y]=0;
-				matrix[x][y]=temp;
-				x+=1;
-				moves++;
-				break;
-			case UP_ARROW_KEY:
-			case W_KEY:
-				if(x==0)break;
-				temp=matrix[x-1][y];
-				matrix[x-1][y]=0;
-				matrix[x][y]=temp;
-				x-=1;
-				moves++;
-				break;
-			case LEFT_ARROW_KEY:
-			case A_KEY:
-				if(y==0)break;
-				temp=matrix[x][y-1];
-				matrix[x][y-1]=0;
-				matrix[x][y]=temp;
-				y-=1;
-				moves++;
-				break;
-			case RIGHT_ARROW_KEY:
-			case D_KEY:
-				if(y==3)break;
-				temp=matrix[x][y+1];
-				matrix[x][y+1]=0;
-				matrix[x][y]=temp;
-				y+=1;
-				moves++;
-				break;
-			case ESC_KEY:
-				cout << "I'm sorry you want to end this amazing game...\n";
-				return 0;
-			default:
-				cout << "Sorry don't know\n";
-				int a=0x00;
-				cin >> a;
-				break;
-		}*/
 		system("clear");//Clear the screen
 		cout << "0 is in coordinates x: " << x+1 << " ; y: " << y+1 << endl;
 		cout << "Player moves: "<< moves << endl;
 		print_2d_array(matrix);
-
 	}
 	return 0;
 }
