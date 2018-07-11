@@ -7,15 +7,15 @@
 using namespace std;
 static struct termios old, nw;
 
-const char SPECIAL_KEY 0x1b 	// <ESC> but in composed char like arrow the first part
-const char A_KEY 0x61
-const char D_KEY 0x64
-const char S_KEY 0x73
-const char W_KEY 0x77
-const char UP_ARROW_KEY 0x25		//65 ... 68
-const char DOWN_ARROW_KEY 0x26	//<ANY_ARROW> in Unix like are something like 0x1b
-const char RIGHT_ARROW_KEY 0x27
-const char LEFT_ARROW_KEY 0x28 //0x25 ...0x28
+const char SPECIAL_KEY = 0x1b; 	// <ESC> but in composed char like arrow the first part
+const char A_KEY = 0x61;
+const char D_KEY = 0x64;
+const char S_KEY = 0x73;
+const char W_KEY = 0x77;
+const char UP_ARROW_KEY = 0x25;		//65 ... 68
+const char DOWN_ARROW_KEY = 0x26;	//<ANY_ARROW> in Unix like are something like 0x1b
+const char RIGHT_ARROW_KEY = 0x27;
+const char LEFT_ARROW_KEY = 0x28; //0x25 ...0x28
 
 
 
